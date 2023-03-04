@@ -20,16 +20,39 @@ public class Huffman {
         countFrequencies(text);
         fillTree();
         fillDicts(this.tree.get(0), "");
-        String result = new String();
-        for (var letter : text.toCharArray())
-        {
-            result += this.encodingDict.get(letter);
+        String code = new String();
+        for (var letter : text.toCharArray()) {
+            code += this.encodingDict.get(letter);
         }
-        return result;
-
+        return code;
     }
 
-    // Wypełnianie mapy "freqencies"
+    public String decode(String code, HashMap<String, Character> dict) throws Exception {
+        if (code == null || code.isEmpty()) {
+            throw new Exception("The code contains no data");
+        }
+        if (dict == null || dict.isEmpty()) {
+            throw new Exception("A valid dictionary was not provided");
+        }
+        String text = new String();
+        String currentLetter = new String();
+        for (var bit : code.toCharArray())
+        {
+            currentLetter += bit;
+            if(dict.containsKey(currentLetter))
+            {
+                text += dict.get(currentLetter);
+                currentLetter = "";
+            }
+        }
+        if(!currentLetter.isEmpty()) // jeśli po pętli nie jest puste, zapewne dane i słownik są niekompatybilne
+        {
+            throw new Exception("A valid dictionary was not provided");
+        }
+        return text;
+    }
+
+    // wypełnianie mapy "freqencies"
     private void countFrequencies(String text) {
         this.frequencies = new HashMap<>();
         for (var letter : text.toCharArray())  // nie można bez tego iterować po tekście
@@ -79,13 +102,24 @@ public class Huffman {
         }
     }
 
+    public HashMap<String, Character> getDecodingDict() throws Exception{
+        if(this.decodingDict == null)
+        {
+            throw new Exception("Nothing has been coded yet");
+        }
+        return decodingDict;
+    }
+
     // testowy main
     public static void main(String[] args) {
         Huffman huffman = new Huffman();
         try {
-            System.out.println(huffman.encode("AABBCCDDDDDDDFFFEEER"));
+            String code = huffman.encode("Sus Smolinus");
+            System.out.println(code);
+            String text = huffman.decode(code, huffman.getDecodingDict());
+            System.out.println(text);
         } catch (Exception e) {
-
+            System.out.println(e.getMessage());
         }
     }
 }
