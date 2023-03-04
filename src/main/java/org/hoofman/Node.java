@@ -20,4 +20,20 @@ public class Node implements Comparable<Node> {
         }
         return o.numericalValue - this.numericalValue; // jeśli dodatnie, to obiekt jest większy, najpierw największe
     }
+
+    public int getNumericalValue() {
+        return numericalValue;
+    }
+
+    public char getLetter() {
+        return letter;
+    }
+
+    public Node getLeft() {
+        return left;
+    }
+
+    public Node getRight() {
+        return right;
+    }
 }
