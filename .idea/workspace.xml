@@ -5,13 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="468fbe43-ad9c-43a1-812d-909f4223a29d" name="Changes" comment="Decoding and file access">
-      <change afterPath="$PROJECT_DIR$/destination.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/source.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/source.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/hoofman/Archive.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/hoofman/ProgramInstance.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/hoofman/Huffman.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/hoofman/Huffman.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/destination.txt" beforeDir="false" afterPath="$PROJECT_DIR$/destination.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source.bin" beforeDir="false" afterPath="$PROJECT_DIR$/source.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source.txt" beforeDir="false" afterPath="$PROJECT_DIR$/source.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/hoofman/ProgramInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/hoofman/ProgramInstance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/hoofman/Word.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

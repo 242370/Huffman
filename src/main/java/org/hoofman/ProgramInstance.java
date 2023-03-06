@@ -17,9 +17,8 @@ public class ProgramInstance {
 
     // dekompresja
     private static String binaryToChars(byte[] binaryValue, int length) {
-        String result = new BigInteger(binaryValue).toString(2);
+        String result = new BigInteger(binaryValue).toString(2); // zamiana ciagu bitów na tekst, bez zmiany systemu
         String padding = new String();
-        // zamiana ciagu bitów na tekst, bez zmiany systemu
         for (int i = 0; i < length - result.length(); i++) {
             padding += '0';
         }
@@ -65,10 +64,22 @@ public class ProgramInstance {
     }
 
     public static void main(String[] args) {
-        try {
-            readZip(makeZip());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        int flag = 1; // określenie funkcji gniazda
+        switch (flag)
+        {
+            case 0: // nasłuch
+                System.out.println("I'm listening");
+                break;
+            case 1: // przesył
+                try {
+                    readZip(makeZip());
+                    System.out.println("Data sent");
+                    break;
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            default:
+                System.out.println("Unknown code");
         }
     }
 }
