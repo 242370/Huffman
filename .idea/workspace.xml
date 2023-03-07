@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8ef095cd-5fd5-49a8-9b48-a18a42d2a51b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
+    <list default="true" id="468fbe43-ad9c-43a1-812d-909f4223a29d" name="Changes" comment="Decoding and file access">
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/destination.txt" beforeDir="false" afterPath="$PROJECT_DIR$/destination.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source.bin" beforeDir="false" afterPath="$PROJECT_DIR$/source.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source.txt" beforeDir="false" afterPath="$PROJECT_DIR$/source.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/hoofman/ProgramInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/hoofman/ProgramInstance.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -35,7 +36,9 @@
     </option>
   </component>
   <component name="ProjectId" id="2MgSa8vtBSFVFIKyLlJpRDNXsjx" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />

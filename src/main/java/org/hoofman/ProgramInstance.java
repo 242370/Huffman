@@ -64,7 +64,7 @@ public class ProgramInstance {
     }
 
     public static void main(String[] args) {
-        int flag = 0; // określenie funkcji gniazda
+        int flag = 1; // określenie funkcji gniazda
         switch (flag)
         {
             case 0: // nasłuch
