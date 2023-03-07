@@ -25,12 +25,15 @@ public class ConnectionHandler {
         try {
             serverSocket = new ServerSocket(port);
             clientSocket = serverSocket.accept();
+            System.out.println("Server: client connected successfully");
+
             writer = new PrintWriter(clientSocket.getOutputStream(), true);
             reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            String greeting = reader.readLine();
+
+            String greeting = reader.readLine(); //czyta wiadomosc od uzytkownika
             if ("hello server".equals(greeting)) {
-                writer.println(Files.readString(Path.of("source.txt")));
-                reader.readLine();
+                System.out.println("Message from client: " + greeting);
+                writer.println("hello client, i'm server; your data ->" + Files.readString(Path.of("source.txt")));//wysyla clientowi
             }
             else {
                 writer.println("unrecognised greeting");
@@ -64,7 +67,7 @@ public class ConnectionHandler {
     }
 
     public String sendMessageToServer(String msg) throws IOException {
-        writer.println(msg);
+        writer.println(msg); //wysyla wiadomosc do serwera
         String resp = reader.readLine();
         return resp;
     }

@@ -70,20 +70,20 @@ public class ProgramInstance {
 
 
     public static void main(String[] args) {
-        int flag = 1; // określenie funkcji gniazda
+        int flag = 0; // określenie funkcji gniazda
         switch (flag)
         {
             case 0: // nasłuch
                 ConnectionHandler server = new ConnectionHandler();
-                server.startListening(port);
                 System.out.println("I'm listening");
+                server.startListening(port);
 
                 break;
             case 1: // przesył
                 try {
                     readZip(makeZip());
                     ConnectionHandler client = new ConnectionHandler();
-                    client.startConnectionByClient(InetAddress.getLocalHost().getHostAddress(), port);
+                    client.startConnectionByClient("10.128.137.60", port);
                     System.out.println("Data sent");
                     String response = client.sendMessageToServer("hello server");
                     System.out.println(response);
