@@ -1,0 +1,1089 @@
+Index: pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pom.xml b/pom.xml
+new file mode 100644
+--- /dev/null	(date 1677752878000)
++++ b/pom.xml	(date 1677752878000)
+@@ -0,0 +1,85 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xmlns="http://maven.apache.org/POM/4.0.0"
++         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
++    <modelVersion>4.0.0</modelVersion>
++
++    <groupId>org.example</groupId>
++    <artifactId>Huffman</artifactId>
++    <version>2.0-SNAPSHOT</version>
++
++    <properties>
++        <maven.compiler.source>17</maven.compiler.source>
++        <maven.compiler.target>17</maven.compiler.target>
++        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
++    </properties>
++
++    <build>
++        <plugins>
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <version>0.8.7</version>
++                <executions>
++                    <execution>
++                        <id>default-prepare-agent</id>
++                        <goals>
++                            <goal>prepare-agent</goal>
++                        </goals>
++                    </execution>
++                    <execution>
++                        <id>default-report</id>
++                        <goals>
++                            <goal>report</goal>
++                        </goals>
++                    </execution>
++                    <execution>
++                        <id>default-check</id>
++                        <goals>
++                            <goal>check</goal>
++                        </goals>
++                        <configuration>
++                            <rules>
++                                <rule>
++                                    <element>BUNDLE</element>
++                                    <limits>
++                                        <limit>
++                                            <counter>COMPLEXITY</counter>
++                                            <value>COVEREDRATIO</value>
++                                            <minimum>0.60</minimum>
++                                        </limit>
++                                    </limits>
++                                </rule>
++                            </rules>
++                        </configuration>
++                    </execution>
++                </executions>
++            </plugin>
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-compiler-plugin</artifactId>
++                <version>3.8.1</version>
++            </plugin>
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-surefire-plugin</artifactId>
++                <version>3.0.0-M5</version>
++            </plugin>
++        </plugins>
++    </build>
++
++    <dependencies>
++        <dependency>
++            <groupId>org.junit.jupiter</groupId>
++            <artifactId>junit-jupiter-engine</artifactId>
++            <version>5.7.2</version>
++            <scope>test</scope>
++        </dependency>
++        <dependency>
++            <groupId>org.apache.commons</groupId>
++            <artifactId>commons-lang3</artifactId>
++            <version>3.12.0</version>
++        </dependency>
++    </dependencies>
++
++</project>
+\ No newline at end of file
+Index: src/main/java/org/hoofman/Archive.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/hoofman/Archive.java b/src/main/java/org/hoofman/Archive.java
+new file mode 100644
+--- /dev/null	(date 1677944740000)
++++ b/src/main/java/org/hoofman/Archive.java	(date 1677944740000)
+@@ -0,0 +1,29 @@
++package org.hoofman;
++
++import java.io.Serializable;
++import java.util.HashMap;
++
++public class Archive implements Serializable { // obiekt tej klasy będzie przesyłany przez sieć
++    private final byte[] binaryValue;
++    private final HashMap<String, Character> decodingDict;
++
++    private final int length ;
++
++    public Archive(byte[] binaryValue, HashMap<String, Character> decodingDict, int length) {
++        this.binaryValue = binaryValue;
++        this.decodingDict = decodingDict;
++        this.length = length;
++    }
++
++    public byte[] getBinaryValue() {
++        return binaryValue;
++    }
++
++    public HashMap<String, Character> getDecodingDict() {
++        return decodingDict;
++    }
++
++    public int getLength() {
++        return length;
++    }
++}
+Index: src/main/java/org/hoofman/Huffman.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/hoofman/Huffman.java b/src/main/java/org/hoofman/Huffman.java
+new file mode 100644
+--- /dev/null	(date 1677943554000)
++++ b/src/main/java/org/hoofman/Huffman.java	(date 1677943554000)
+@@ -0,0 +1,125 @@
++package org.hoofman;
++
++import java.util.ArrayList;
++import java.util.Collections;
++import java.util.HashMap;
++
++public class Huffman {
++    private HashMap<Character, Integer> frequencies; // klucz - litera, wartość - liczba wystąpień
++    private ArrayList<Node> tree; // lista, w której przechowywane są węzły od największego
++    private HashMap<Character, String> encodingDict; // klucz - litera, wartość - słowo kodowe (bity)
++    private HashMap<String, Character> decodingDict; // klucz - słowo kodowe, wartość - litera
++
++    // Tworzenie Stringa do przesłania
++    public String encode(String text) throws Exception {
++        if (text == null || text.isEmpty()) {
++            throw new Exception("Given text contains no data");
++        }
++        this.encodingDict = new HashMap<>(); // czyszczenie struktur danych
++        this.decodingDict = new HashMap<>();
++        countFrequencies(text);
++        fillTree();
++        fillDicts(this.tree.get(0), "");
++        String code = new String();
++        for (var letter : text.toCharArray()) {
++            code += this.encodingDict.get(letter);
++        }
++        return code;
++    }
++
++    public String decode(String code, HashMap<String, Character> dict) throws Exception {
++        if (code == null || code.isEmpty()) {
++            throw new Exception("The code contains no data");
++        }
++        if (dict == null || dict.isEmpty()) {
++            throw new Exception("A valid dictionary was not provided");
++        }
++        String text = new String();
++        String currentLetter = new String();
++        for (var bit : code.toCharArray())
++        {
++            currentLetter += bit;
++            if(dict.containsKey(currentLetter))
++            {
++                text += dict.get(currentLetter);
++                currentLetter = "";
++            }
++        }
++        if(!currentLetter.isEmpty()) // jeśli po pętli nie jest puste, zapewne dane i słownik są niekompatybilne
++        {
++            throw new Exception("A valid dictionary was not provided");
++        }
++        return text;
++    }
++
++    // wypełnianie mapy "freqencies"
++    private void countFrequencies(String text) {
++        this.frequencies = new HashMap<>();
++        for (var letter : text.toCharArray())  // nie można bez tego iterować po tekście
++        {
++            if (this.frequencies.containsKey(letter)) // w przypadku, kiedy litera już znajduje się w mapie
++            {
++                this.frequencies.put(letter, this.frequencies.get(letter) + 1);
++            } else {
++                this.frequencies.put(letter, 1);
++            }
++        }
++    }
++
++    // budowanie drzewa kodowego
++    private void fillTree() {
++        this.tree = new ArrayList<>();
++        for (var key : this.frequencies.keySet()) {
++            this.tree.add(new Node(this.frequencies.get(key), key, null, null)); // na razie bez struktury
++        }
++        if (this.tree.size() == 1) // w przypadku tekstu z tylko jednym znakiem
++        {
++            Node right = this.tree.get(0); // jedyny element
++            Node aggregator = new Node(right.getNumericalValue(), '\0', null, right);
++            this.tree.set(0, aggregator); // mimo tylko jednego znaku, powstaje węzeł
++        }
++        while (this.tree.size() > 1) {
++            Collections.sort(this.tree); // sortowanie tablicy, żeby zawsze brać najmniejsze dwa
++            Node left = this.tree.get(this.tree.size() - 1); // ostatni element
++            Node right = this.tree.get(this.tree.size() - 2); // przedostatni element
++            Node aggregator = new Node(left.getNumericalValue() + right.getNumericalValue(), '\0', left, right);
++            this.tree.remove(this.tree.size() - 1); // pomniejszenie rozmaiaru tablicy o 1
++            this.tree.set(this.tree.size() - 1, aggregator); // wpisanie na ostatnie miejsce węzła nie będącego liściem
++        }
++    }
++
++    // tworzenie słowników
++    private void fillDicts(Node root, String word) {
++        if (root.getLeft() == null && root.getRight() == null) { // warunek brzegowy oparty na liściu
++            this.encodingDict.put(root.getLetter(), word);
++            this.decodingDict.put(word, root.getLetter());
++        }
++        if (root.getLeft() != null) {
++            fillDicts(root.getLeft(), word + '0'); // konwencja - 0 na lewo, 1 na prawo
++        }
++        if (root.getRight() != null) { // w przypadku drzewa kodowego warunek zbędny, ale dodający czytelności
++            fillDicts(root.getRight(), word + '1');
++        }
++    }
++
++    public HashMap<String, Character> getDecodingDict() throws Exception{
++        if(this.decodingDict == null)
++        {
++            throw new Exception("Nothing has been coded yet");
++        }
++        return decodingDict;
++    }
++
++    // testowy main
++    public static void main(String[] args) {
++        Huffman huffman = new Huffman();
++        try {
++            String code = huffman.encode("Sus Smolinus");
++            System.out.println(code);
++            String text = huffman.decode(code, huffman.getDecodingDict());
++            System.out.println(text);
++        } catch (Exception e) {
++            System.out.println(e.getMessage());
++        }
++    }
++}
+Index: src/main/java/org/hoofman/Node.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/hoofman/Node.java b/src/main/java/org/hoofman/Node.java
+new file mode 100644
+--- /dev/null	(date 1677927118000)
++++ b/src/main/java/org/hoofman/Node.java	(date 1677927118000)
+@@ -0,0 +1,39 @@
++package org.hoofman;
++
++public class Node implements Comparable<Node> {
++    private int numericalValue; // wartość oznaczająca liczbę wystąpień węzła
++    private char letter = '\0'; // domyślnie znak zerowy, bo nie wszystkie węzły mają przypisaną literę
++    private Node left = null; // hipotetyczne lewe dziecko
++    private Node right = null; // hipotetyczne prawe dziecko
++
++    public Node(int numericalValue, char letter, Node left, Node right) {
++        this.numericalValue = numericalValue;
++        this.letter = letter;
++        this.left = left;
++        this.right = right;
++    }
++
++    @Override
++    public int compareTo(Node o) throws NullPointerException {
++        if (o == null) {
++            throw new NullPointerException("");
++        }
++        return o.numericalValue - this.numericalValue; // jeśli dodatnie, to obiekt jest większy, najpierw największe
++    }
++
++    public int getNumericalValue() {
++        return numericalValue;
++    }
++
++    public char getLetter() {
++        return letter;
++    }
++
++    public Node getLeft() {
++        return left;
++    }
++
++    public Node getRight() {
++        return right;
++    }
++}
+Index: src/main/java/org/hoofman/ProgramInstance.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/hoofman/ProgramInstance.java b/src/main/java/org/hoofman/ProgramInstance.java
+new file mode 100644
+--- /dev/null	(date 1678108144000)
++++ b/src/main/java/org/hoofman/ProgramInstance.java	(date 1678108144000)
+@@ -0,0 +1,85 @@
++package org.hoofman;
++
++import java.math.BigInteger;
++import java.nio.file.Files;
++import java.nio.file.Path;
++
++public class ProgramInstance {
++    private static String sourceFile = "source.txt"; // statyczne, żeby funkcja main mogła się odwołać
++    private static String destinationFile = "destination.txt";
++    private static String binaryFile = "source.bin"; // binarna wersja pliku źródłowego
++
++    // kompresja pliku tekstowego
++    private static byte[] charsToBinary(String code) // byte, aby zaszła kompresja, bez tego 2 bajtowe chary
++    {
++        return new BigInteger(code, 2).toByteArray(); // zwracana jest jedna liczba w systemie binarnym
++    }
++
++    // dekompresja
++    private static String binaryToChars(byte[] binaryValue, int length) {
++        String result = new BigInteger(binaryValue).toString(2); // zamiana ciagu bitów na tekst, bez zmiany systemu
++        String padding = new String();
++        for (int i = 0; i < length - result.length(); i++) {
++            padding += '0';
++        }
++        return padding + result;
++    }
++
++    // tworzenie obiektu wykorzystywanego do przesyłu
++    private static Archive makeZip() {
++        String text = new String();
++        Archive archive = null; // zserializowany obiekt archiwum
++        try {
++            text = Files.readString(Path.of(sourceFile));
++        } catch (Exception e) {
++            System.out.println(e.getMessage());
++        }
++        Huffman huffman = new Huffman();
++        try {
++            String code = huffman.encode(text);
++            archive = new Archive(charsToBinary(code), huffman.getDecodingDict(), code.length());
++            System.out.println(code);
++            Files.write(Path.of(binaryFile), charsToBinary(code));
++        } catch (Exception e) {
++            System.out.println(e.getMessage());
++        }
++        return archive;
++    }
++
++    // odczyt z odebranego oobjektu archiwum
++    private static void readZip(Archive archive) throws Exception {
++        if (archive == null) {
++            throw new Exception("No binary object provided");
++        }
++        Files.write(Path.of(binaryFile), archive.getBinaryValue()); // zapis skompresowanej wiadomości u odbiorcy
++        Huffman huffman = new Huffman();
++        String text = new String();
++        System.out.println(binaryToChars(archive.getBinaryValue(), archive.getLength()));
++        try {
++            text = huffman.decode(binaryToChars(archive.getBinaryValue(), archive.getLength()), archive.getDecodingDict());
++            Files.writeString(Path.of(destinationFile), text);
++        } catch (Exception e) {
++            System.out.println(e.getMessage());
++        }
++    }
++
++    public static void main(String[] args) {
++        int flag = 1; // określenie funkcji gniazda
++        switch (flag)
++        {
++            case 0: // nasłuch
++                System.out.println("I'm listening");
++                break;
++            case 1: // przesył
++                try {
++                    readZip(makeZip());
++                    System.out.println("Data sent");
++                    break;
++                } catch (Exception e) {
++                    System.out.println(e.getMessage());
++                }
++            default:
++                System.out.println("Unknown code");
++        }
++    }
++}
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1678189309970)
++++ b/.idea/vcs.xml	(date 1678189309970)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+new file mode 100644
+--- /dev/null	(date 1678188013923)
++++ b/.idea/misc.xml	(date 1678188013923)
+@@ -0,0 +1,11 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="MavenProjectsManager">
++    <option name="originalFiles">
++      <list>
++        <option value="$PROJECT_DIR$/pom.xml" />
++      </list>
++    </option>
++  </component>
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="17" project-jdk-type="JavaSDK" />
++</project>
+\ No newline at end of file
+Index: .idea/encodings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/encodings.xml b/.idea/encodings.xml
+new file mode 100644
+--- /dev/null	(date 1678188013944)
++++ b/.idea/encodings.xml	(date 1678188013944)
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="Encoding">
++    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
++    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+new file mode 100644
+--- /dev/null	(date 1678189667334)
++++ b/.idea/workspace.xml	(date 1678189667334)
+@@ -0,0 +1,82 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="AutoImportSettings">
++    <option name="autoReloadType" value="SELECTIVE" />
++  </component>
++  <component name="ChangeListManager">
++    <list default="true" id="8ef095cd-5fd5-49a8-9b48-a18a42d2a51b" name="Changes" comment="" />
++    <option name="SHOW_DIALOG" value="false" />
++    <option name="HIGHLIGHT_CONFLICTS" value="true" />
++    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
++    <option name="LAST_RESOLUTION" value="IGNORE" />
++  </component>
++  <component name="Git.Settings">
++    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
++  </component>
++  <component name="MarkdownSettingsMigration">
++    <option name="stateVersion" value="1" />
++  </component>
++  <component name="MavenImportPreferences">
++    <option name="generalSettings">
++      <MavenGeneralSettings>
++        <option name="useMavenConfig" value="true" />
++      </MavenGeneralSettings>
++    </option>
++  </component>
++  <component name="ProjectId" id="2MgSa8vtBSFVFIKyLlJpRDNXsjx" />
++  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
++  <component name="ProjectViewState">
++    <option name="hideEmptyMiddlePackages" value="true" />
++    <option name="showLibraryContents" value="true" />
++  </component>
++  <component name="PropertiesComponent"><![CDATA[{
++  "keyToString": {
++    "RunOnceActivity.OpenProjectViewOnStart": "true",
++    "RunOnceActivity.ShowReadmeOnStart": "true",
++    "last_opened_file_path": "C:/Users/jkowa/Desktop/Studia/telekomuna/Huffman",
++    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
++  }
++}]]></component>
++  <component name="RunManager">
++    <configuration name="Huffman" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
++      <option name="MAIN_CLASS_NAME" value="org.hoofman.Huffman" />
++      <module name="Huffman" />
++      <extension name="coverage">
++        <pattern>
++          <option name="PATTERN" value="org.hoofman.*" />
++          <option name="ENABLED" value="true" />
++        </pattern>
++      </extension>
++      <method v="2">
++        <option name="Make" enabled="true" />
++      </method>
++    </configuration>
++    <recent_temporary>
++      <list>
++        <item itemvalue="Application.Huffman" />
++      </list>
++    </recent_temporary>
++  </component>
++  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
++  <component name="TaskManager">
++    <task active="true" id="Default" summary="Default task">
++      <changelist id="8ef095cd-5fd5-49a8-9b48-a18a42d2a51b" name="Changes" comment="" />
++      <created>1678187797313</created>
++      <option name="number" value="Default" />
++      <option name="presentableId" value="Default" />
++      <updated>1678187797313</updated>
++    </task>
++    <servers />
++  </component>
++  <component name="Vcs.Log.Tabs.Properties">
++    <option name="TAB_STATES">
++      <map>
++        <entry key="MAIN">
++          <value>
++            <State />
++          </value>
++        </entry>
++      </map>
++    </option>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/dbnavigator.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/dbnavigator.xml b/.idea/dbnavigator.xml
+new file mode 100644
+--- /dev/null	(date 1678189311178)
++++ b/.idea/dbnavigator.xml	(date 1678189311178)
+@@ -0,0 +1,414 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="DBNavigator.Project.DataEditorManager">
++    <record-view-column-sorting-type value="BY_INDEX" />
++    <value-preview-text-wrapping value="true" />
++    <value-preview-pinned value="false" />
++  </component>
++  <component name="DBNavigator.Project.DatabaseEditorStateManager">
++    <last-used-providers />
++  </component>
++  <component name="DBNavigator.Project.DatabaseFileManager">
++    <open-files />
++  </component>
++  <component name="DBNavigator.Project.Settings">
++    <connections />
++    <browser-settings>
++      <general>
++        <display-mode value="TABBED" />
++        <navigation-history-size value="100" />
++        <show-object-details value="false" />
++      </general>
++      <filters>
++        <object-type-filter>
++          <object-type name="SCHEMA" enabled="true" />
++          <object-type name="USER" enabled="true" />
++          <object-type name="ROLE" enabled="true" />
++          <object-type name="PRIVILEGE" enabled="true" />
++          <object-type name="CHARSET" enabled="true" />
++          <object-type name="TABLE" enabled="true" />
++          <object-type name="VIEW" enabled="true" />
++          <object-type name="MATERIALIZED_VIEW" enabled="true" />
++          <object-type name="NESTED_TABLE" enabled="true" />
++          <object-type name="COLUMN" enabled="true" />
++          <object-type name="INDEX" enabled="true" />
++          <object-type name="CONSTRAINT" enabled="true" />
++          <object-type name="DATASET_TRIGGER" enabled="true" />
++          <object-type name="DATABASE_TRIGGER" enabled="true" />
++          <object-type name="SYNONYM" enabled="true" />
++          <object-type name="SEQUENCE" enabled="true" />
++          <object-type name="PROCEDURE" enabled="true" />
++          <object-type name="FUNCTION" enabled="true" />
++          <object-type name="PACKAGE" enabled="true" />
++          <object-type name="TYPE" enabled="true" />
++          <object-type name="TYPE_ATTRIBUTE" enabled="true" />
++          <object-type name="ARGUMENT" enabled="true" />
++          <object-type name="DIMENSION" enabled="true" />
++          <object-type name="CLUSTER" enabled="true" />
++          <object-type name="DBLINK" enabled="true" />
++        </object-type-filter>
++      </filters>
++      <sorting>
++        <object-type name="COLUMN" sorting-type="NAME" />
++        <object-type name="FUNCTION" sorting-type="NAME" />
++        <object-type name="PROCEDURE" sorting-type="NAME" />
++        <object-type name="ARGUMENT" sorting-type="POSITION" />
++        <object-type name="TYPE ATTRIBUTE" sorting-type="POSITION" />
++      </sorting>
++      <default-editors>
++        <object-type name="VIEW" editor-type="SELECTION" />
++        <object-type name="PACKAGE" editor-type="SELECTION" />
++        <object-type name="TYPE" editor-type="SELECTION" />
++      </default-editors>
++    </browser-settings>
++    <navigation-settings>
++      <lookup-filters>
++        <lookup-objects>
++          <object-type name="SCHEMA" enabled="true" />
++          <object-type name="USER" enabled="false" />
++          <object-type name="ROLE" enabled="false" />
++          <object-type name="PRIVILEGE" enabled="false" />
++          <object-type name="CHARSET" enabled="false" />
++          <object-type name="TABLE" enabled="true" />
++          <object-type name="VIEW" enabled="true" />
++          <object-type name="MATERIALIZED VIEW" enabled="true" />
++          <object-type name="INDEX" enabled="true" />
++          <object-type name="CONSTRAINT" enabled="true" />
++          <object-type name="DATASET TRIGGER" enabled="true" />
++          <object-type name="DATABASE TRIGGER" enabled="true" />
++          <object-type name="SYNONYM" enabled="false" />
++          <object-type name="SEQUENCE" enabled="true" />
++          <object-type name="PROCEDURE" enabled="true" />
++          <object-type name="FUNCTION" enabled="true" />
++          <object-type name="PACKAGE" enabled="true" />
++          <object-type name="TYPE" enabled="true" />
++          <object-type name="DIMENSION" enabled="false" />
++          <object-type name="CLUSTER" enabled="false" />
++          <object-type name="DBLINK" enabled="true" />
++        </lookup-objects>
++        <force-database-load value="false" />
++        <prompt-connection-selection value="true" />
++        <prompt-schema-selection value="true" />
++      </lookup-filters>
++    </navigation-settings>
++    <dataset-grid-settings>
++      <general>
++        <enable-zooming value="true" />
++        <enable-column-tooltip value="true" />
++      </general>
++      <sorting>
++        <nulls-first value="true" />
++        <max-sorting-columns value="4" />
++      </sorting>
++      <audit-columns>
++        <column-names value="" />
++        <visible value="true" />
++        <editable value="false" />
++      </audit-columns>
++    </dataset-grid-settings>
++    <dataset-editor-settings>
++      <text-editor-popup>
++        <active value="false" />
++        <active-if-empty value="false" />
++        <data-length-threshold value="100" />
++        <popup-delay value="1000" />
++      </text-editor-popup>
++      <values-actions-popup>
++        <show-popup-button value="true" />
++        <element-count-threshold value="1000" />
++        <data-length-threshold value="250" />
++      </values-actions-popup>
++      <general>
++        <fetch-block-size value="100" />
++        <fetch-timeout value="30" />
++        <trim-whitespaces value="true" />
++        <convert-empty-strings-to-null value="true" />
++        <select-content-on-cell-edit value="true" />
++        <large-value-preview-active value="true" />
++      </general>
++      <filters>
++        <prompt-filter-dialog value="true" />
++        <default-filter-type value="BASIC" />
++      </filters>
++      <qualified-text-editor text-length-threshold="300">
++        <content-types>
++          <content-type name="Text" enabled="true" />
++          <content-type name="Properties" enabled="true" />
++          <content-type name="XML" enabled="true" />
++          <content-type name="DTD" enabled="true" />
++          <content-type name="HTML" enabled="true" />
++          <content-type name="XHTML" enabled="true" />
++          <content-type name="Java" enabled="true" />
++          <content-type name="SQL" enabled="true" />
++          <content-type name="PL/SQL" enabled="true" />
++          <content-type name="JSON" enabled="true" />
++          <content-type name="JSON5" enabled="true" />
++          <content-type name="Groovy" enabled="true" />
++          <content-type name="AIDL" enabled="true" />
++          <content-type name="YAML" enabled="true" />
++          <content-type name="Manifest" enabled="true" />
++        </content-types>
++      </qualified-text-editor>
++      <record-navigation>
++        <navigation-target value="VIEWER" />
++      </record-navigation>
++    </dataset-editor-settings>
++    <code-editor-settings>
++      <general>
++        <show-object-navigation-gutter value="false" />
++        <show-spec-declaration-navigation-gutter value="true" />
++        <enable-spellchecking value="true" />
++        <enable-reference-spellchecking value="false" />
++      </general>
++      <confirmations>
++        <save-changes value="false" />
++        <revert-changes value="true" />
++      </confirmations>
++    </code-editor-settings>
++    <code-completion-settings>
++      <filters>
++        <basic-filter>
++          <filter-element type="RESERVED_WORD" id="keyword" selected="true" />
++          <filter-element type="RESERVED_WORD" id="function" selected="true" />
++          <filter-element type="RESERVED_WORD" id="parameter" selected="true" />
++          <filter-element type="RESERVED_WORD" id="datatype" selected="true" />
++          <filter-element type="RESERVED_WORD" id="exception" selected="true" />
++          <filter-element type="OBJECT" id="schema" selected="true" />
++          <filter-element type="OBJECT" id="role" selected="true" />
++          <filter-element type="OBJECT" id="user" selected="true" />
++          <filter-element type="OBJECT" id="privilege" selected="true" />
++          <user-schema>
++            <filter-element type="OBJECT" id="table" selected="true" />
++            <filter-element type="OBJECT" id="view" selected="true" />
++            <filter-element type="OBJECT" id="materialized view" selected="true" />
++            <filter-element type="OBJECT" id="index" selected="true" />
++            <filter-element type="OBJECT" id="constraint" selected="true" />
++            <filter-element type="OBJECT" id="trigger" selected="true" />
++            <filter-element type="OBJECT" id="synonym" selected="false" />
++            <filter-element type="OBJECT" id="sequence" selected="true" />
++            <filter-element type="OBJECT" id="procedure" selected="true" />
++            <filter-element type="OBJECT" id="function" selected="true" />
++            <filter-element type="OBJECT" id="package" selected="true" />
++            <filter-element type="OBJECT" id="type" selected="true" />
++            <filter-element type="OBJECT" id="dimension" selected="true" />
++            <filter-element type="OBJECT" id="cluster" selected="true" />
++            <filter-element type="OBJECT" id="dblink" selected="true" />
++          </user-schema>
++          <public-schema>
++            <filter-element type="OBJECT" id="table" selected="false" />
++            <filter-element type="OBJECT" id="view" selected="false" />
++            <filter-element type="OBJECT" id="materialized view" selected="false" />
++            <filter-element type="OBJECT" id="index" selected="false" />
++            <filter-element type="OBJECT" id="constraint" selected="false" />
++            <filter-element type="OBJECT" id="trigger" selected="false" />
++            <filter-element type="OBJECT" id="synonym" selected="false" />
++            <filter-element type="OBJECT" id="sequence" selected="false" />
++            <filter-element type="OBJECT" id="procedure" selected="false" />
++            <filter-element type="OBJECT" id="function" selected="false" />
++            <filter-element type="OBJECT" id="package" selected="false" />
++            <filter-element type="OBJECT" id="type" selected="false" />
++            <filter-element type="OBJECT" id="dimension" selected="false" />
++            <filter-element type="OBJECT" id="cluster" selected="false" />
++            <filter-element type="OBJECT" id="dblink" selected="false" />
++          </public-schema>
++          <any-schema>
++            <filter-element type="OBJECT" id="table" selected="true" />
++            <filter-element type="OBJECT" id="view" selected="true" />
++            <filter-element type="OBJECT" id="materialized view" selected="true" />
++            <filter-element type="OBJECT" id="index" selected="true" />
++            <filter-element type="OBJECT" id="constraint" selected="true" />
++            <filter-element type="OBJECT" id="trigger" selected="true" />
++            <filter-element type="OBJECT" id="synonym" selected="true" />
++            <filter-element type="OBJECT" id="sequence" selected="true" />
++            <filter-element type="OBJECT" id="procedure" selected="true" />
++            <filter-element type="OBJECT" id="function" selected="true" />
++            <filter-element type="OBJECT" id="package" selected="true" />
++            <filter-element type="OBJECT" id="type" selected="true" />
++            <filter-element type="OBJECT" id="dimension" selected="true" />
++            <filter-element type="OBJECT" id="cluster" selected="true" />
++            <filter-element type="OBJECT" id="dblink" selected="true" />
++          </any-schema>
++        </basic-filter>
++        <extended-filter>
++          <filter-element type="RESERVED_WORD" id="keyword" selected="true" />
++          <filter-element type="RESERVED_WORD" id="function" selected="true" />
++          <filter-element type="RESERVED_WORD" id="parameter" selected="true" />
++          <filter-element type="RESERVED_WORD" id="datatype" selected="true" />
++          <filter-element type="RESERVED_WORD" id="exception" selected="true" />
++          <filter-element type="OBJECT" id="schema" selected="true" />
++          <filter-element type="OBJECT" id="user" selected="true" />
++          <filter-element type="OBJECT" id="role" selected="true" />
++          <filter-element type="OBJECT" id="privilege" selected="true" />
++          <user-schema>
++            <filter-element type="OBJECT" id="table" selected="true" />
++            <filter-element type="OBJECT" id="view" selected="true" />
++            <filter-element type="OBJECT" id="materialized view" selected="true" />
++            <filter-element type="OBJECT" id="index" selected="true" />
++            <filter-element type="OBJECT" id="constraint" selected="true" />
++            <filter-element type="OBJECT" id="trigger" selected="true" />
++            <filter-element type="OBJECT" id="synonym" selected="true" />
++            <filter-element type="OBJECT" id="sequence" selected="true" />
++            <filter-element type="OBJECT" id="procedure" selected="true" />
++            <filter-element type="OBJECT" id="function" selected="true" />
++            <filter-element type="OBJECT" id="package" selected="true" />
++            <filter-element type="OBJECT" id="type" selected="true" />
++            <filter-element type="OBJECT" id="dimension" selected="true" />
++            <filter-element type="OBJECT" id="cluster" selected="true" />
++            <filter-element type="OBJECT" id="dblink" selected="true" />
++          </user-schema>
++          <public-schema>
++            <filter-element type="OBJECT" id="table" selected="true" />
++            <filter-element type="OBJECT" id="view" selected="true" />
++            <filter-element type="OBJECT" id="materialized view" selected="true" />
++            <filter-element type="OBJECT" id="index" selected="true" />
++            <filter-element type="OBJECT" id="constraint" selected="true" />
++            <filter-element type="OBJECT" id="trigger" selected="true" />
++            <filter-element type="OBJECT" id="synonym" selected="true" />
++            <filter-element type="OBJECT" id="sequence" selected="true" />
++            <filter-element type="OBJECT" id="procedure" selected="true" />
++            <filter-element type="OBJECT" id="function" selected="true" />
++            <filter-element type="OBJECT" id="package" selected="true" />
++            <filter-element type="OBJECT" id="type" selected="true" />
++            <filter-element type="OBJECT" id="dimension" selected="true" />
++            <filter-element type="OBJECT" id="cluster" selected="true" />
++            <filter-element type="OBJECT" id="dblink" selected="true" />
++          </public-schema>
++          <any-schema>
++            <filter-element type="OBJECT" id="table" selected="true" />
++            <filter-element type="OBJECT" id="view" selected="true" />
++            <filter-element type="OBJECT" id="materialized view" selected="true" />
++            <filter-element type="OBJECT" id="index" selected="true" />
++            <filter-element type="OBJECT" id="constraint" selected="true" />
++            <filter-element type="OBJECT" id="trigger" selected="true" />
++            <filter-element type="OBJECT" id="synonym" selected="true" />
++            <filter-element type="OBJECT" id="sequence" selected="true" />
++            <filter-element type="OBJECT" id="procedure" selected="true" />
++            <filter-element type="OBJECT" id="function" selected="true" />
++            <filter-element type="OBJECT" id="package" selected="true" />
++            <filter-element type="OBJECT" id="type" selected="true" />
++            <filter-element type="OBJECT" id="dimension" selected="true" />
++            <filter-element type="OBJECT" id="cluster" selected="true" />
++            <filter-element type="OBJECT" id="dblink" selected="true" />
++          </any-schema>
++        </extended-filter>
++      </filters>
++      <sorting enabled="true">
++        <sorting-element type="RESERVED_WORD" id="keyword" />
++        <sorting-element type="RESERVED_WORD" id="datatype" />
++        <sorting-element type="OBJECT" id="column" />
++        <sorting-element type="OBJECT" id="table" />
++        <sorting-element type="OBJECT" id="view" />
++        <sorting-element type="OBJECT" id="materialized view" />
++        <sorting-element type="OBJECT" id="index" />
++        <sorting-element type="OBJECT" id="constraint" />
++        <sorting-element type="OBJECT" id="trigger" />
++        <sorting-element type="OBJECT" id="synonym" />
++        <sorting-element type="OBJECT" id="sequence" />
++        <sorting-element type="OBJECT" id="procedure" />
++        <sorting-element type="OBJECT" id="function" />
++        <sorting-element type="OBJECT" id="package" />
++        <sorting-element type="OBJECT" id="type" />
++        <sorting-element type="OBJECT" id="dimension" />
++        <sorting-element type="OBJECT" id="cluster" />
++        <sorting-element type="OBJECT" id="dblink" />
++        <sorting-element type="OBJECT" id="schema" />
++        <sorting-element type="OBJECT" id="role" />
++        <sorting-element type="OBJECT" id="user" />
++        <sorting-element type="RESERVED_WORD" id="function" />
++        <sorting-element type="RESERVED_WORD" id="parameter" />
++      </sorting>
++      <format>
++        <enforce-code-style-case value="true" />
++      </format>
++    </code-completion-settings>
++    <execution-engine-settings>
++      <statement-execution>
++        <fetch-block-size value="100" />
++        <execution-timeout value="20" />
++        <debug-execution-timeout value="600" />
++        <focus-result value="false" />
++        <prompt-execution value="false" />
++      </statement-execution>
++      <script-execution>
++        <command-line-interfaces />
++        <execution-timeout value="300" />
++      </script-execution>
++      <method-execution>
++        <execution-timeout value="30" />
++        <debug-execution-timeout value="600" />
++        <parameter-history-size value="10" />
++      </method-execution>
++    </execution-engine-settings>
++    <operation-settings>
++      <transactions>
++        <uncommitted-changes>
++          <on-project-close value="ASK" />
++          <on-disconnect value="ASK" />
++          <on-autocommit-toggle value="ASK" />
++        </uncommitted-changes>
++        <multiple-uncommitted-changes>
++          <on-commit value="ASK" />
++          <on-rollback value="ASK" />
++        </multiple-uncommitted-changes>
++      </transactions>
++      <session-browser>
++        <disconnect-session value="ASK" />
++        <kill-session value="ASK" />
++        <reload-on-filter-change value="false" />
++      </session-browser>
++      <compiler>
++        <compile-type value="KEEP" />
++        <compile-dependencies value="ASK" />
++        <always-show-controls value="false" />
++      </compiler>
++      <debugger>
++        <debugger-type value="ASK" />
++        <use-generic-runners value="true" />
++      </debugger>
++    </operation-settings>
++    <ddl-file-settings>
++      <extensions>
++        <mapping file-type-id="VIEW" extensions="vw" />
++        <mapping file-type-id="TRIGGER" extensions="trg" />
++        <mapping file-type-id="PROCEDURE" extensions="prc" />
++        <mapping file-type-id="FUNCTION" extensions="fnc" />
++        <mapping file-type-id="PACKAGE" extensions="pkg" />
++        <mapping file-type-id="PACKAGE_SPEC" extensions="pks" />
++        <mapping file-type-id="PACKAGE_BODY" extensions="pkb" />
++        <mapping file-type-id="TYPE" extensions="tpe" />
++        <mapping file-type-id="TYPE_SPEC" extensions="tps" />
++        <mapping file-type-id="TYPE_BODY" extensions="tpb" />
++      </extensions>
++      <general>
++        <lookup-ddl-files value="true" />
++        <create-ddl-files value="false" />
++        <synchronize-ddl-files value="true" />
++        <use-qualified-names value="false" />
++        <make-scripts-rerunnable value="true" />
++      </general>
++    </ddl-file-settings>
++    <general-settings>
++      <regional-settings>
++        <date-format value="MEDIUM" />
++        <number-format value="UNGROUPED" />
++        <locale value="SYSTEM_DEFAULT" />
++        <use-custom-formats value="false" />
++      </regional-settings>
++      <environment>
++        <environment-types>
++          <environment-type id="development" name="Development" description="Development environment" color="-2430209/-12296320" readonly-code="false" readonly-data="false" />
++          <environment-type id="integration" name="Integration" description="Integration environment" color="-2621494/-12163514" readonly-code="true" readonly-data="false" />
++          <environment-type id="production" name="Production" description="Productive environment" color="-11574/-10271420" readonly-code="true" readonly-data="true" />
++          <environment-type id="other" name="Other" description="" color="-1576/-10724543" readonly-code="false" readonly-data="false" />
++        </environment-types>
++        <visibility-settings>
++          <connection-tabs value="true" />
++          <dialog-headers value="true" />
++          <object-editor-tabs value="true" />
++          <script-editor-tabs value="false" />
++          <execution-result-tabs value="true" />
++        </visibility-settings>
++      </environment>
++    </general-settings>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/checkstyle-idea.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/checkstyle-idea.xml b/.idea/checkstyle-idea.xml
+new file mode 100644
+--- /dev/null	(date 1678189311132)
++++ b/.idea/checkstyle-idea.xml	(date 1678189311132)
+@@ -0,0 +1,16 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="CheckStyle-IDEA" serialisationVersion="2">
++    <checkstyleVersion>10.3.4</checkstyleVersion>
++    <scanScope>JavaOnly</scanScope>
++    <copyLibs>true</copyLibs>
++    <option name="thirdPartyClasspath" />
++    <option name="activeLocationIds" />
++    <option name="locations">
++      <list>
++        <ConfigurationLocation id="bundled-sun-checks" type="BUNDLED" scope="All" description="Sun Checks">(bundled)</ConfigurationLocation>
++        <ConfigurationLocation id="bundled-google-checks" type="BUNDLED" scope="All" description="Google Checks">(bundled)</ConfigurationLocation>
++      </list>
++    </option>
++  </component>
++</project>
+\ No newline at end of file
+Index: destination.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/destination.txt b/destination.txt
+new file mode 100644
+--- /dev/null	(date 1678188080255)
++++ b/destination.txt	(date 1678188080255)
+@@ -0,0 +1,1 @@
++lalalalal
+\ No newline at end of file
+Index: source.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/source.txt b/source.txt
+new file mode 100644
+--- /dev/null	(date 1678188076242)
++++ b/source.txt	(date 1678188076242)
+@@ -0,0 +1,1 @@
++lalalalal
+\ No newline at end of file
+Index: .gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+--- /dev/null	(date 1677752688000)
++++ b/.gitignore	(date 1677752688000)
+@@ -0,0 +1,38 @@
++target/
++!.mvn/wrapper/maven-wrapper.jar
++!**/src/main/**/target/
++!**/src/test/**/target/
++
++### IntelliJ IDEA ###
++.idea/modules.xml
++.idea/jarRepositories.xml
++.idea/compiler.xml
++.idea/libraries/
++*.iws
++*.iml
++*.ipr
++
++### Eclipse ###
++.apt_generated
++.classpath
++.factorypath
++.project
++.settings
++.springBeans
++.sts4-cache
++
++### NetBeans ###
++/nbproject/private/
++/nbbuild/
++/dist/
++/nbdist/
++/.nb-gradle/
++build/
++!**/src/main/**/build/
++!**/src/test/**/build/
++
++### VS Code ###
++.vscode/
++
++### Mac OS ###
++.DS_Store
+\ No newline at end of file

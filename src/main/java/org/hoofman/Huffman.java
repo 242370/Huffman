@@ -111,15 +111,15 @@ public class Huffman {
     }
 
     // testowy main
-    public static void main(String[] args) {
-        Huffman huffman = new Huffman();
-        try {
-            String code = huffman.encode("Sus Smolinus");
-            System.out.println(code);
-            String text = huffman.decode(code, huffman.getDecodingDict());
-            System.out.println(text);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
+//    public static void main(String[] args) {
+//        Huffman huffman = new Huffman();
+//        try {
+//            String code = huffman.encode("Sus Smolinus");
+//            System.out.println(code);
+//            String text = huffman.decode(code, huffman.getDecodingDict());
+//            System.out.println(text);
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
+//    }
 }

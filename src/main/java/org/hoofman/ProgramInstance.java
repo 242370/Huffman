@@ -1,6 +1,9 @@
 package org.hoofman;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -63,6 +66,7 @@ public class ProgramInstance {
         }
     }
 
+
     public static void main(String[] args) {
         int flag = 1; // określenie funkcji gniazda
         switch (flag)
@@ -83,3 +87,4 @@ public class ProgramInstance {
         }
     }
 }
+

@@ -4,18 +4,33 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="468fbe43-ad9c-43a1-812d-909f4223a29d" name="Changes" comment="Decoding and file access">
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/destination.txt" beforeDir="false" afterPath="$PROJECT_DIR$/destination.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/source.bin" beforeDir="false" afterPath="$PROJECT_DIR$/source.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/source.txt" beforeDir="false" afterPath="$PROJECT_DIR$/source.txt" afterDir="false" />
+=======
+    <list default="true" id="8ef095cd-5fd5-49a8-9b48-a18a42d2a51b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/hoofman/ConnectionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/hoofman/Huffman.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/hoofman/Huffman.java" afterDir="false" />
+>>>>>>> 41bcc9b (server connection has to be tested)
       <change beforePath="$PROJECT_DIR$/src/main/java/org/hoofman/ProgramInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/hoofman/ProgramInstance.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -78,8 +93,25 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ProgramInstance.givenGreetingClient_whenServerRespondsWhenStarted_thenCorrect" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Huffman" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.hoofman.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.hoofman" />
+      <option name="MAIN_CLASS_NAME" value="org.hoofman.ProgramInstance" />
+      <option name="METHOD_NAME" value="givenGreetingClient_whenServerRespondsWhenStarted_thenCorrect" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.ProgramInstance.givenGreetingClient_whenServerRespondsWhenStarted_thenCorrect" />
         <item itemvalue="Application.ProgramInstance" />
         <item itemvalue="Application.Huffman" />
       </list>
