@@ -12,6 +12,8 @@ public class ProgramInstance {
     private static String destinationFile = "destination.txt";
     private static String binaryFile = "source.bin"; // binarna wersja pliku źródłowego
 
+    private static int port = 6666;
+
     // kompresja pliku tekstowego
     private static byte[] charsToBinary(String code) // byte, aby zaszła kompresja, bez tego 2 bajtowe chary
     {
@@ -72,12 +74,19 @@ public class ProgramInstance {
         switch (flag)
         {
             case 0: // nasłuch
+                ConnectionHandler server = new ConnectionHandler();
+                server.startListening(port);
                 System.out.println("I'm listening");
+
                 break;
             case 1: // przesył
                 try {
                     readZip(makeZip());
+                    ConnectionHandler client = new ConnectionHandler();
+                    client.startConnectionByClient(InetAddress.getLocalHost().getHostAddress(), port);
                     System.out.println("Data sent");
+                    String response = client.sendMessageToServer("hello server");
+                    System.out.println(response);
                     break;
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
