@@ -11,6 +11,8 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class ConnectionHandler {
     private ServerSocket serverSocket;
@@ -27,7 +29,8 @@ public class ConnectionHandler {
             reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String greeting = reader.readLine();
             if ("hello server".equals(greeting)) {
-                writer.println("hello client");
+                writer.println(Files.readString(Path.of("source.txt")));
+                reader.readLine();
             }
             else {
                 writer.println("unrecognised greeting");
