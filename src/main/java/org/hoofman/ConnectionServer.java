@@ -33,9 +33,11 @@ public class ConnectionServer {
     }
 
     public void getData(ObjectInputStream reader) throws Exception {
-        FootballPlayer receivedPlayer = (FootballPlayer) reader.readObject();
+        //FootballPlayer receivedPlayer = (FootballPlayer) reader.readObject();
+        Archive archive = (Archive) reader.readObject();
         System.out.println("6. Received data from client");
-        System.out.println("Data: " + receivedPlayer.getName() + " " + receivedPlayer.getSurname() + " " + receivedPlayer.getNumber());
+        //System.out.println("Data: " + receivedPlayer.getName() + " " + receivedPlayer.getSurname() + " " + receivedPlayer.getNumber());
+        System.out.println("Data: " + archive.getBinaryValue() + " " + archive.getDecodingDict() + " " + archive.getLength());
     }
 
     public void sendData(ObjectOutput writer) throws Exception {

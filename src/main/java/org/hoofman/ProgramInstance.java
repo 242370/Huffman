@@ -81,7 +81,7 @@ public class ProgramInstance {
                 try {
                     //readZip(makeZip());
                     ConnectionClient client = new ConnectionClient();
-                    client.clientConnect();
+                    client.clientConnect(makeZip());
                     break;
                 } catch (Exception e) {
                     System.out.println(e.getMessage());

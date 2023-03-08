@@ -5,7 +5,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class ConnectionClient {
-    public void clientConnect() throws Exception{
+    public void clientConnect(Archive archive) throws Exception{
         Socket socket = new Socket(ConnectionServer.MY_IP, ConnectionServer.PORT);
 
         System.out.println("2. Client ready to connect");
@@ -14,7 +14,7 @@ public class ConnectionClient {
         ObjectInputStream reader = new ObjectInputStream(socket.getInputStream());
 
         greeting(writer);
-        sendData(writer, reader);
+        sendData(writer, reader, archive);
         getData(reader);
         endConnection(writer, socket);
     }
@@ -24,13 +24,13 @@ public class ConnectionClient {
         writer.writeObject(greeting);
     }
 
-    public void sendData(ObjectOutputStream writer, ObjectInputStream reader) throws Exception {
+    public void sendData(ObjectOutputStream writer, ObjectInputStream reader, Archive archive) throws Exception {
         String respondFromServer = (String) reader.readObject();
         if(respondFromServer.equals("4. Hi client, give me data")){
             System.out.println(respondFromServer);
-            FootballPlayer player = new FootballPlayer("Cristiano", "Ronaldo", 7);
+            //FootballPlayer player = new FootballPlayer("Cristiano", "Ronaldo", 7);
             System.out.println("5. Sending data to server...");
-            writer.writeObject(player);
+            writer.writeObject(archive);
         }
     }
 
@@ -44,9 +44,9 @@ public class ConnectionClient {
         socket.close();
     }
 
-    public static void main(String[] args) throws Exception{
-
-        ConnectionClient client = new ConnectionClient();
-        client.clientConnect();
-    }
+//    public static void main(String[] args) throws Exception{
+//
+//        ConnectionClient client = new ConnectionClient();
+//        client.clientConnect();
+//    }
 }
