@@ -7,7 +7,7 @@ public class Archive implements Serializable { // obiekt tej klasy będzie przes
     private final byte[] binaryValue;
     private final HashMap<String, Character> decodingDict;
 
-    private final int length ;
+    private final int length;
 
     public Archive(byte[] binaryValue, HashMap<String, Character> decodingDict, int length) {
         this.binaryValue = binaryValue;

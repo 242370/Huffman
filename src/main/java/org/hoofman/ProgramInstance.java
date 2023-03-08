@@ -69,10 +69,9 @@ public class ProgramInstance {
     }
 
 
-    public static void main(String[] args) throws Exception{
-        int flag = 1; // określenie funkcji gniazda
-        switch (flag)
-        {
+    public static void main(String[] args) throws Exception {
+        int flag = 0; // określenie funkcji gniazda
+        switch (flag) {
             case 0: // nasłuch
                 ConnectionServer server = new ConnectionServer();
                 Archive archive = server.serverConnect();

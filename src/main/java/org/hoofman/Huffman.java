@@ -36,16 +36,14 @@ public class Huffman {
         }
         String text = new String();
         String currentLetter = new String();
-        for (var bit : code.toCharArray())
-        {
+        for (var bit : code.toCharArray()) {
             currentLetter += bit;
-            if(dict.containsKey(currentLetter))
-            {
+            if (dict.containsKey(currentLetter)) {
                 text += dict.get(currentLetter);
                 currentLetter = "";
             }
         }
-        if(!currentLetter.isEmpty()) // jeśli po pętli nie jest puste, zapewne dane i słownik są niekompatybilne
+        if (!currentLetter.isEmpty()) // jeśli po pętli nie jest puste, zapewne dane i słownik są niekompatybilne
         {
             throw new Exception("A valid dictionary was not provided");
         }
@@ -102,9 +100,8 @@ public class Huffman {
         }
     }
 
-    public HashMap<String, Character> getDecodingDict() throws Exception{
-        if(this.decodingDict == null)
-        {
+    public HashMap<String, Character> getDecodingDict() throws Exception {
+        if (this.decodingDict == null) {
             throw new Exception("Nothing has been coded yet");
         }
         return decodingDict;
