@@ -81,11 +81,11 @@ public class ProgramInstance {
                 break;
             case 1: // przesył
                 try {
-                    readZip(makeZip());
+                    //readZip(makeZip());
                     ConnectionHandler client = new ConnectionHandler();
                     client.startConnectionByClient("10.128.137.60", port);
                     System.out.println("Data sent");
-                    String response = client.sendMessageToServer("hello server");
+                    String response = client.sendMessageToServer(makeZip().toString());
                     System.out.println(response);
                     break;
                 } catch (Exception e) {
