@@ -1,12 +1,9 @@
 package org.hoofman;
 
-import javax.crypto.spec.PSource;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -17,8 +14,11 @@ import java.nio.file.Path;
 public class ConnectionHandler {
     private ServerSocket serverSocket;
     private Socket clientSocket;
-    private BufferedReader reader;
-    private PrintWriter  writer;
+    private BufferedReader messageReader;
+    private PrintWriter messageWriter;
+
+    private ObjectOutputStream objectWriter;
+    private ObjectInputStream objectReader;
 
     //Server Part
     public void startListening(int port) {
@@ -27,26 +27,32 @@ public class ConnectionHandler {
             clientSocket = serverSocket.accept();
             System.out.println("Server: client connected successfully");
 
-            writer = new PrintWriter(clientSocket.getOutputStream(), true);
-            reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            messageWriter = new PrintWriter(clientSocket.getOutputStream(), true);
+            messageReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            objectWriter = new ObjectOutputStream(clientSocket.getOutputStream());
+            objectReader = new ObjectInputStream(clientSocket.getInputStream());
 
-            String greeting = reader.readLine(); //czyta wiadomosc od uzytkownika
+            Archive archive = (Archive) objectReader.readObject(); //read object from user
+            String greeting = messageReader.readLine(); //read message from user
             if ("hello server".equals(greeting)) {
                 System.out.println("Message from client: " + greeting);
-                writer.println("hello client, i'm server; your data ->" + Files.readString(Path.of("source.txt")));//wysyla clientowi
+                System.out.println("Data from client (System.out.println): " + archive);
+                System.out.println("Sending data to client...");
+                messageWriter.println("hello client, i'm server; your data ->" + Files.readString(Path.of("source.txt")));//send data to client
+                System.out.println("Sent successfully");
             }
             else {
-                writer.println("unrecognised greeting");
+                messageWriter.println("unrecognised greeting");
             }
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void stopConnectionByServer() {
         try {
-            reader.close();
-            writer.close();
+            messageReader.close();
+            messageWriter.close();
             clientSocket.close();
             serverSocket.close();
         } catch (IOException e) {
@@ -59,23 +65,26 @@ public class ConnectionHandler {
     public void startConnectionByClient(String ip, int port) {
         try {
             clientSocket = new Socket(ip, port);
-            writer = new PrintWriter(clientSocket.getOutputStream(), true);
-            reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            messageWriter = new PrintWriter(clientSocket.getOutputStream(), true);
+            messageReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            objectWriter = new ObjectOutputStream(clientSocket.getOutputStream());
+            objectReader = new ObjectInputStream(clientSocket.getInputStream());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public String sendMessageToServer(String msg) throws IOException {
-        writer.println(msg); //wysyla wiadomosc do serwera
-        String resp = reader.readLine();
+    public String sendMessageToServer(String msg, Archive archive) throws IOException {
+        messageWriter.println(msg); //send message to server
+        objectWriter.writeObject(archive); //send object to server
+        String resp = messageReader.readLine();
         return resp;
     }
 
     public void stopConnectionByClient() {
         try {
-            reader.close();
-            writer.close();
+            messageReader.close();
+            messageWriter.close();
             clientSocket.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());

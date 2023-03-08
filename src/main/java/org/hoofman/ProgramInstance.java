@@ -85,7 +85,7 @@ public class ProgramInstance {
                     ConnectionHandler client = new ConnectionHandler();
                     client.startConnectionByClient("10.128.137.60", port);
                     System.out.println("Data sent");
-                    String response = client.sendMessageToServer(makeZip().toString());
+                    String response = client.sendMessageToServer("Hello server", makeZip());
                     System.out.println(response);
                     break;
                 } catch (Exception e) {
