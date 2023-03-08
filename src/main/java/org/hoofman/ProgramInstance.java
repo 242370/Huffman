@@ -70,7 +70,7 @@ public class ProgramInstance {
 
 
     public static void main(String[] args) throws Exception {
-        int flag = 0; // określenie funkcji gniazda
+        int flag = 1; // określenie funkcji gniazda
         switch (flag) {
             case 0: // nasłuch
                 ConnectionServer server = new ConnectionServer();
@@ -79,7 +79,6 @@ public class ProgramInstance {
                 break;
             case 1: // przesył
                 try {
-                    //readZip(makeZip());
                     ConnectionClient client = new ConnectionClient();
                     client.clientConnect(makeZip());
                     break;

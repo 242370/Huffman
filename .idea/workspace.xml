@@ -4,15 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c89052be-37fb-415f-b457-7a89888b62b4" name="Changes" comment="">
+    <list default="true" id="c89052be-37fb-415f-b457-7a89888b62b4" name="Changes" comment="Code cleaning">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/destination.txt" beforeDir="false" afterPath="$PROJECT_DIR$/destination.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/source.bin" beforeDir="false" afterPath="$PROJECT_DIR$/source.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/hoofman/Archive.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/hoofman/Archive.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source.txt" beforeDir="false" afterPath="$PROJECT_DIR$/source.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/hoofman/ConnectionClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/hoofman/ConnectionClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/hoofman/ConnectionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/hoofman/ConnectionServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/hoofman/FootballPlayer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/hoofman/Huffman.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/hoofman/Huffman.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/hoofman/ProgramInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/hoofman/ProgramInstance.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -72,6 +70,14 @@
       <option name="presentableId" value="Default" />
       <updated>1678216688174</updated>
     </task>
+    <task id="LOCAL-00001" summary="Code cleaning">
+      <created>1678280426105</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1678280426105</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -84,5 +90,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Code cleaning" />
+    <option name="LAST_COMMIT_MESSAGE" value="Code cleaning" />
   </component>
 </project>
