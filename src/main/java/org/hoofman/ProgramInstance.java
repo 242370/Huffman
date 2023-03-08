@@ -69,24 +69,19 @@ public class ProgramInstance {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         int flag = 0; // określenie funkcji gniazda
         switch (flag)
         {
             case 0: // nasłuch
-                ConnectionHandler server = new ConnectionHandler();
-                System.out.println("I'm listening");
-                server.startListening(port);
-
+                ConnectionServer server = new ConnectionServer();
+                server.serverConnect();
                 break;
             case 1: // przesył
                 try {
                     //readZip(makeZip());
-                    ConnectionHandler client = new ConnectionHandler();
-                    client.startConnectionByClient("10.128.137.60", port);
-                    System.out.println("Data sent");
-                    String response = client.sendMessageToServer("Hello server", makeZip());
-                    System.out.println(response);
+                    ConnectionClient client = new ConnectionClient();
+                    client.clientConnect();
                     break;
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
