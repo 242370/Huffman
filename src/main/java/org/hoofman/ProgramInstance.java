@@ -70,12 +70,13 @@ public class ProgramInstance {
 
 
     public static void main(String[] args) throws Exception{
-        int flag = 0; // określenie funkcji gniazda
+        int flag = 1; // określenie funkcji gniazda
         switch (flag)
         {
             case 0: // nasłuch
                 ConnectionServer server = new ConnectionServer();
-                server.serverConnect();
+                Archive archive = server.serverConnect();
+                readZip(archive);
                 break;
             case 1: // przesył
                 try {

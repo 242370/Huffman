@@ -6,7 +6,7 @@ import java.net.Socket;
 
 public class ConnectionClient {
     public void clientConnect(Archive archive) throws Exception{
-        Socket socket = new Socket(ConnectionServer.MY_IP, ConnectionServer.PORT);
+        Socket socket = new Socket(ConnectionServer.SOMEONES_IP, ConnectionServer.PORT);
 
         System.out.println("2. Client ready to connect");
 

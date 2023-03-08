@@ -1,5 +1,7 @@
 package org.hoofman;
 
+import org.apache.commons.lang3.arch.Processor;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
@@ -11,16 +13,17 @@ public class ConnectionServer {
     public static final String MY_IP = "10.128.110.154";
     public static final String SOMEONES_IP = "10.128.137.60";
 
-    public void serverConnect() throws Exception {
+    public Archive serverConnect() throws Exception {
         ServerSocket server = new ServerSocket(PORT);
         System.out.println("1. Server opened");
         Socket socket = server.accept();
         ObjectOutputStream writer = new ObjectOutputStream(socket.getOutputStream());
         ObjectInputStream reader = new ObjectInputStream(socket.getInputStream());
         greeting(writer, reader);
-        getData(reader);
+        Archive archive = getData(reader);
         sendData(writer);
         endConnection(server, writer);
+        return archive;
     }
 
     public void greeting(ObjectOutputStream writer, ObjectInputStream reader) throws Exception{
@@ -32,12 +35,13 @@ public class ConnectionServer {
         }
     }
 
-    public void getData(ObjectInputStream reader) throws Exception {
+    public Archive getData(ObjectInputStream reader) throws Exception {
         //FootballPlayer receivedPlayer = (FootballPlayer) reader.readObject();
         Archive archive = (Archive) reader.readObject();
         System.out.println("6. Received data from client");
         //System.out.println("Data: " + receivedPlayer.getName() + " " + receivedPlayer.getSurname() + " " + receivedPlayer.getNumber());
         System.out.println("Data: " + archive.getBinaryValue() + " " + archive.getDecodingDict() + " " + archive.getLength());
+        return archive;
     }
 
     public void sendData(ObjectOutput writer) throws Exception {
