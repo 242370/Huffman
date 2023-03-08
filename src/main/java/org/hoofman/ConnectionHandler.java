@@ -29,7 +29,7 @@ public class ConnectionHandler {
 
             messageWriter = new PrintWriter(clientSocket.getOutputStream(), true);
             messageReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            objectWriter = new ObjectOutputStream(clientSocket.getOutputStream());
+            // objectWriter = new ObjectOutputStream(clientSocket.getOutputStream());
             objectReader = new ObjectInputStream(clientSocket.getInputStream());
 
             Archive archive = (Archive) objectReader.readObject(); //read object from user
@@ -45,7 +45,7 @@ public class ConnectionHandler {
                 messageWriter.println("unrecognised greeting");
             }
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -67,15 +67,15 @@ public class ConnectionHandler {
             clientSocket = new Socket(ip, port);
             messageWriter = new PrintWriter(clientSocket.getOutputStream(), true);
             messageReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            objectWriter = new ObjectOutputStream(clientSocket.getOutputStream());
-            objectReader = new ObjectInputStream(clientSocket.getInputStream());
+            //objectReader = new ObjectInputStream(clientSocket.getInputStream());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
     }
 
     public String sendMessageToServer(String msg, Archive archive) throws IOException {
         messageWriter.println(msg); //send message to server
+        objectWriter = new ObjectOutputStream(clientSocket.getOutputStream());
         objectWriter.writeObject(archive); //send object to server
         String resp = messageReader.readLine();
         return resp;
